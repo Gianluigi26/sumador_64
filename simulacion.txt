@@ -1,0 +1,42 @@
+`timescale 1ns / 1ps
+
+module FullAdder_tb;
+
+// Parámetros
+localparam WIDTH = 64;
+
+// Definición de señales
+logic [WIDTH-1:0] A;
+logic [WIDTH-1:0] B;
+logic Cin;
+logic [WIDTH-1:0] Sum;
+logic Cout;
+
+// Instanciación del DUT (Design Under Test)
+FullAdder #(WIDTH) dut (
+    .A(A),
+    .B(B),
+    .Cin(Cin),
+    .Sum(Sum),
+    .Cout(Cout)
+);
+
+// Inicialización de las señales de entrada
+initial begin
+    // Asignación de valores para la suma (30 + 20)
+    A = 6'b11110; // 30 en binario
+    B = 6'b10100; // 20 en binario
+    // Asignación del valor de Carry-In
+    Cin = 0;
+    
+    // Esperar un corto tiempo y luego finalizar la simulación
+    #10;
+    $finish;
+end
+
+// Monitoreo de las señales de salida
+always @* begin
+    // Aquí podrías incluir la visualización de las señales de salida si lo deseas
+end
+
+endmodule

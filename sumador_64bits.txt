@@ -1,0 +1,48 @@
+`timescale 1ns / 1ps
+module FullAdder #(parameter WIDTH = 64)(
+    input logic [WIDTH-1:0] A,
+    input logic [WIDTH-1:0] B,
+    input logic Cin,
+    output logic [WIDTH-1:0] Sum,
+    output logic Cout
+);
+
+// Declaración de variables internas
+logic [WIDTH-1:0] intermedio_sum;
+logic [WIDTH:0] intermedio_carry;
+
+// Instanciación de sumadores de un bit en cascada
+genvar i;
+generate
+    for (i = 0; i < WIDTH; i++) begin : gen_full_adder
+        FullAdder_1bit #(
+            .WIDTH(WIDTH)
+        ) fa(
+            .A(A[i]),
+            .B(B[i]),
+            .Cin(i == 0 ? Cin : intermedio_carry[i-1]),
+            .Sum(intermedio_sum[i]),
+            .Cout(intermedio_carry[i])
+        );
+    end
+endgenerate
+
+// Asignación de sumas y Carry-Out
+assign Sum = intermedio_sum;
+assign Cout = intermedio_carry[WIDTH];
+
+endmodule
+
+module FullAdder_1bit #(parameter WIDTH = 64)(
+    input logic A,
+    input logic B,
+    input logic Cin,
+    output logic Sum,
+    output logic Cout
+);
+
+// Lógica del sumador de un bit
+assign Sum = A ^ B ^ Cin;
+assign Cout = (A & B) | (Cin & (A ^ B));
+
+endmodule
